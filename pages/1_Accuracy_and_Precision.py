@@ -113,6 +113,17 @@ if uploaded_file:
     final_df["DEV"] = (final_df["CertValNum"] - final_df["Mean"]).abs()
 
     # Calculate Limits — Placeholder logic (to be updated based on precision matrix)
+    # Merge Acceptance columns if exact column not found
+    final_df["Acceptance"] = np.nan
+    for col in final_df.columns:
+        if col.startswith("Acceptance"):
+            temp = pd.to_numeric(final_df[col].replace("-", np.nan), errors="coerce")
+            if "2s" in col:
+                temp = temp / 2
+            elif "3s" in col:
+                temp = temp / 3
+            final_df["Acceptance"] = final_df["Acceptance"].combine_first(temp)
+    
     final_df["A_Limit"] = pd.to_numeric(final_df["Acceptance"], errors="coerce")
     final_df["P_Limit"] = final_df["CV"].astype(float) * 0.05  # ← update with real lookup
 
