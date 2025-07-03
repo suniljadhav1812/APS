@@ -1,0 +1,29 @@
+=================================================================
+Stabilization: 
+=> Ensure the unit is stable wrt the following for a period of 8-hours prior to the test
+=> Optics temperature: 24 +/- 0.1 degree-C (Metavision 10008X, Metavision 1008i3)
+=> Optics temperature: 38 +/- 0.1 degree-C (Metavision 8i) 
+=> Optics temperature: 45 +/- 0.1 degree-C (Metavision MX/MX+)
+=> Optics pressure: 0.1-mbar to 0.16-mbar (Metavision 10008X & Metavision 1008i3)
+=> No disconnections
+=> Unit has to clear diagnostic check once at the beginning and end of the 8-hours test
+=> Unit has to clear SmartSTD check once at the beginning and end of the 8-hours test
+=> Spark chamber maintenance has to performed at the start of the stabilization process
+=================================================================
+Sample preparation:
+=> Prepare CRMs and Production samples using a Sample preparation Machine
+=> Appropriate sample preparation process have to be followed
+=> Standard temperature should stay below 100-degree-C post preparation and before testing.
+=> Ensure sample surface is flat
+=> Don't touch sample surface
+=> No contamination with liquids, no water cooling
+=================================================================
+Routine maintenance before data collection:
+=> Spark chamber cleaning
+================================================================= 
+Sample burning:
+=> The sample should be located on top of the spark hole, completely closing the Spark hole
+=> Sample burn spot should not be at the center of the sample  
+=> Burn spot overlapping of <2-mm is allowed
+=> Thickness of the CRM should be > 5-mm
+=> The recommended CRMs for a particular base and matrix must be used and without rejecting odd burns
