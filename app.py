@@ -90,3 +90,37 @@ if valid:
         st.page_link("pages/2_Stability_Test.py", label="📈 Stability Test", icon="📊")
 else:
     st.warning("⚠️ Please fill in all fields above and check confirmation boxes.")
+
+LOG_FILE = "user_log.csv"
+
+def log_user_data(user_data):
+    log_entry = {
+        "Timestamp": user_data["timestamp"],
+        "Username": user_data["username"],
+        "Bench No": user_data["bench_no"],
+        "LSD": user_data["lsd"],
+        "Base": user_data["base"],
+        "Matrix": user_data["matrix"],
+        "Model": user_data["model"],
+        "Stabilization": user_data["checklist"]["stabilization"],
+        "Maintenance": user_data["checklist"]["maintenance"],
+        "Error Free": user_data["checklist"]["error_free"],
+        "Preparation": user_data["checklist"]["preparation"]
+    }
+
+    df_log = pd.DataFrame([log_entry])
+    if not os.path.exists(LOG_FILE):
+        df_log.to_csv(LOG_FILE, index=False)
+    else:
+        df_log.to_csv(LOG_FILE, mode='a', index=False, header=False)
+
+if os.path.exists(LOG_FILE):
+    st.markdown("### 👥 Download User Activity Log")
+    with open(LOG_FILE, "rb") as f:
+        st.download_button(
+            label="📥 Download Log (CSV)",
+            data=f,
+            file_name="APS_user_log.csv",
+            mime="text/csv"
+        )
+
