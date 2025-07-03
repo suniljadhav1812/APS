@@ -124,3 +124,5 @@ if os.path.exists(LOG_FILE):
             mime="text/csv"
         )
 
+save_user_data(user_data)
+log_user_data(user_data)
