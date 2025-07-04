@@ -15,12 +15,19 @@ TEMP_FILE = "temp_user_data.json"
 # Load saved user data
 @st.cache_data
 def load_user_data():
+    if not os.path.exists(TEMP_FILE):
+        return None
     try:
         with open(TEMP_FILE, "r") as f:
             return json.load(f)
     except:
-        st.error("User info not found. Please complete setup from main page.")
-        st.stop()
+        return None
+
+user_data = load_user_data()
+
+if not user_data:
+    st.warning("⚠️ Please fill out the main form before starting the Stability Test.")
+    st.stop()
 
 def load_precision_table(model_name, base_name):
     folder = "Precision_tables"
