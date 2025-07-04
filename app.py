@@ -3,10 +3,38 @@ import pandas as pd
 import os
 import json
 from datetime import datetime, date
+import streamlit as st
+import json
 
 st.set_page_config(page_title="APS Tool", layout="wide")
 
 TEMP_FILE = "temp_user_data.json"
+
+def save_user_data(data):
+    with open(TEMP_FILE, "w") as f:
+        json.dump(data, f)
+
+st.set_page_config(page_title="APS Main Form", layout="wide")
+st.title("📝 APS Test Setup")
+
+# Input fields
+username = st.text_input("Username")
+bench_no = st.text_input("Bench No.")
+lsd = st.date_input("LSD Date")
+base = st.selectbox("Base", ["Al", "Fe", "Cu", "Ni"])
+matrix = st.text_input("Matrix")
+model = st.text_input("Model")
+if st.button("Submit"):
+    user_data = {
+        "username": username,
+        "bench_no": bench_no,
+        "lsd": str(lsd),  # Convert date to string for JSON
+        "base": base,
+        "matrix": matrix,
+        "model": model
+    }
+    save_user_data(user_data)
+    st.success("✅ User data saved successfully! Proceed to Accuracy & Precision page.")
 
 # Load prerequisites
 def load_prerequisites():
