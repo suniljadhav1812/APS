@@ -160,7 +160,8 @@ if uploaded_file:
     filtered_df = final_df[~final_df['Cert. Val.'].astype(str).str.contains("-", na=False)]
     element_summary = filtered_df.groupby("Elements").apply(summarize_stability).reset_index()
     element_summary.columns = ["Elements", "Stability_Result"]
-
+    element_summary["Elements"] = element_summary["Elements"].str.title()
+    final_df["Elements"] = final_df["Elements"].str.capitalize()
     st.subheader("📋 Stability Result Summary")
     stability_pass_count = element_summary[element_summary["Stability_Result"] == "Pass"].shape[0]
     stability_total = element_summary[element_summary["Stability_Result"].isin(["Pass", "Fail"])].shape[0]
