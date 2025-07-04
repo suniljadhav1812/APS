@@ -5,6 +5,7 @@ import numpy as np
 import os
 import json
 from difflib import get_close_matches
+import io
 
 TEMP_FILE = "temp_user_data.json"
 
@@ -152,7 +153,26 @@ if uploaded_file:
     st.dataframe(final_df[["Sample Name", "Elements", "Mean", "Cert. Val.", "DEV", "A_Limit", "%DEV_A", "A_Result", "SD", "P_Limit", "%DEV_P", "P_Result"]])
 
     with st.expander("📥 Download Final Result as Excel"):
-        st.download_button("Download .xlsx", final_df.to_excel(index=False), file_name="APS_AccuracyPrecision_Result.xlsx")
+        
+
+        # Create a BytesIO buffer
+        buffer = io.BytesIO()
+        
+        # Write the DataFrame to the buffer
+        with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
+            final_df.to_excel(writer, index=False)
+        
+        # Rewind the buffer
+        buffer.seek(0)
+        
+        # Show the download button
+        st.download_button(
+            label="Download .xlsx",
+            data=buffer,
+            file_name="APS_AccuracyPrecision_Result.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+
 
 
 
