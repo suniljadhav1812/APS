@@ -5,7 +5,6 @@ import numpy as np
 import os
 import json
 from difflib import get_close_matches
-import io
 
 TEMP_FILE = "temp_user_data.json"
 
@@ -14,34 +13,14 @@ st.title("🧪 Accuracy & Precision Test")
 
 # Load user session
 def load_user_data():
-    if not os.path.exists("temp_user_data.json"):
-        return None
     try:
-        with open("temp_user_data.json", "r") as f:
+        with open(TEMP_FILE, "r") as f:
             return json.load(f)
     except:
-        return None
+        st.error("User data not found. Please complete the main form first.")
+        st.stop()
 
 user_data = load_user_data()
-
-if not user_data:
-    st.warning("⚠️ Please fill out the main form first.")
-    st.stop()
-user_data = load_user_data()
-if not user_data:
-    st.warning("⚠️ Please fill out the main form before starting the Accuracy & Precision Test.")
-    st.stop()
-
-# Extract and display user info
-base = user_data["base"]
-matrix = user_data["matrix"]
-model = user_data["model"]
-username = user_data["username"]
-lsd = user_data["lsd"]
-bench_no = user_data["bench_no"]
-
-st.markdown(f"**👤 User:** {username} | **🧪 Bench No:** {bench_no} | **🔧 Model:** {model} | **📅 LSD:** {lsd}")
-
 base = user_data.get("base", "")
 matrix = user_data.get("matrix", "")
 samples = []
@@ -107,39 +86,16 @@ if uploaded_file:
 
     # Auto map or suggest
     mapping = {}
-    manual_mapping_needed = {}
-    
     for expected in expected_samples:
-        match = get_close_matches(expected, imported_samples, n=1, cutoff=0.9)
-        if match:
-            mapping[match[0]] = expected  # reverse: imported → expected
-        else:
-            manual_mapping_needed[expected] = None
-    
-    # Ask for manual mapping if needed
-    if manual_mapping_needed:
-        st.warning("🔧 Some samples couldn't be auto-mapped. Please map them manually.")
-    
-        for expected in manual_mapping_needed:
-            selected = st.selectbox(
-                f"Map expected sample '{expected}' to:",
-                options=["❌ Not Found"] + imported_samples,
-                key=f"map_{expected}"
-            )
-            if selected != "❌ Not Found":
-                mapping[selected] = expected  # Add to mapping
-    
-    # Apply mapping to final_df
-    final_df["Sample Name"] = final_df["Sample Name"].replace(mapping)
-    
-    # Display mapping table
+        match = get_close_matches(expected, imported_samples, n=1, cutoff=0.6)
+        mapping[expected] = match[0] if match else None
+
+    st.subheader("🔗 Sample Mapping")
     df_mapping = pd.DataFrame({
         "Expected Sample": expected_samples,
-        "Imported Sample": [next((k for k, v in mapping.items() if v == e), "❌ Not Found") for e in expected_samples]
+        "Imported Sample": [mapping.get(e, "❌ Not Found") for e in expected_samples]
     })
-    st.subheader("🔗 Sample Mapping")
     st.dataframe(df_mapping)
-
 
     # Update names in final_df
     final_df["Sample Name"] = final_df["Sample Name"].replace(mapping)
@@ -260,8 +216,4 @@ if uploaded_file:
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
 
-
-
-
-## ✅ Folder Structure Reminder
 
