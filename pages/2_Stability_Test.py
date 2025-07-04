@@ -172,8 +172,6 @@ if uploaded_file:
     stability_pass_count = element_summary[element_summary["Stability_Result"] == "Pass"].shape[0]
     stability_total = element_summary[element_summary["Stability_Result"].isin(["Pass", "Fail"])].shape[0]
     
-    # Show Stability Metric
-    st.subheader("📋 Stability Result Summary")
     
     colS1, _ = st.columns(2)
     with colS1:
