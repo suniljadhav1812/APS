@@ -159,7 +159,7 @@ if uploaded_file:
     element_summary = filtered_df.groupby("Elements").apply(summarize_stability).reset_index()
     element_summary.columns = ["Elements", "Stability_Result"]
 
-st.subheader("📋 Stability Result Summary")
+    st.subheader("📋 Stability Result Summary")
     stability_pass_count = element_summary[element_summary["Stability_Result"] == "Pass"].shape[0]
     stability_total = element_summary[element_summary["Stability_Result"].isin(["Pass", "Fail"])].shape[0]
     
