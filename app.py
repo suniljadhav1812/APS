@@ -17,24 +17,7 @@ def save_user_data(data):
 st.set_page_config(page_title="APS Main Form", layout="wide")
 st.title("📝 APS Test Setup")
 
-# Input fields
-username = st.text_input("Username")
-bench_no = st.text_input("Bench No.")
-lsd = st.date_input("LSD Date")
-base = st.selectbox("Base", ["Al", "Fe", "Cu", "Ni"])
-matrix = st.text_input("Matrix")
-model = st.text_input("Model")
-if st.button("Submit"):
-    user_data = {
-        "username": username,
-        "bench_no": bench_no,
-        "lsd": str(lsd),  # Convert date to string for JSON
-        "base": base,
-        "matrix": matrix,
-        "model": model
-    }
-    save_user_data(user_data)
-    st.success("✅ User data saved successfully! Proceed to Accuracy & Precision page.")
+
 
 # Load prerequisites
 def load_prerequisites():
@@ -77,6 +60,29 @@ with st.sidebar:
         model_options = []
 
     model = st.selectbox("Select Model", model_options)
+    if st.button("Submit"):
+        if all([username, bench_no, base, matrix, model]):
+            user_data = {
+                "username": username,
+                "bench_no": bench_no,
+                "lsd": lsd.strftime("%d-%m-%Y"),
+                "base": base,
+                "matrix": matrix,
+                "model": model,
+                "timestamp": datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
+                "checklist": {
+                    "stabilization": check_stab,
+                    "maintenance": check_maint,
+                    "error_free": check_err,
+                    "preparation": check_prep
+                }
+            }
+
+            save_user_data(user_data)
+            log_user_data(user_data)
+            st.success("✅ All set! You may proceed from below.")
+        else:
+            st.warning("⚠️ Please complete all required fields.")
 
 st.subheader("📌 Prerequisites")
 st.text_area("Checklist", load_prerequisites(), height=280, disabled=True)
