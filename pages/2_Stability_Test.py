@@ -12,6 +12,22 @@ st.title("📈 Stability Test (Short / Long Term)")
 
 TEMP_FILE = "temp_user_data.json"
 
+# Check if the file exists
+if not os.path.exists(TEMP_FILE):
+    st.warning("⚠️ Please fill out the main form before starting the Stability Test.")
+    st.stop()
+
+# Read the data
+with open(TEMP_FILE, "r") as f:
+    user_data = json.load(f)
+
+# Optional: Check if important values are present
+required = ["username", "bench_no", "lsd"]
+if not all(k in user_data for k in required):
+    st.warning("⚠️ Missing information. Please re-fill the main form.")
+    st.stop()
+
+
 # Load saved user data
 @st.cache_data
 def load_user_data():
