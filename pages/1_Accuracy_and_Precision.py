@@ -175,16 +175,32 @@ if uploaded_file:
     accuracy_counts = final_df[final_df["%DEV_A"].notna()].groupby("Elements").size().reset_index(name="Sample_Count")
     precision_counts = final_df[final_df["%DEV_P"].notna()].groupby("Elements").size().reset_index(name="Sample_Count")
     
-    # Use your existing summarization
+        # Use your existing summarization
     def summarize_accuracy(group):
+        # Skip if all are missing
         if (group["Cert. Val."] == "-").all():
             return "NA"
-        return "Pass" if (group["A_Result"] == "Pass").all() else "Fail"
     
+        # Filter out NA rows before checking
+        filtered = group[group["A_Result"] != "NA"]
+    
+        if filtered.empty:
+            return "NA"
+    
+        return "Pass" if (filtered["A_Result"] == "Pass").all() else "Fail"
+    
+        
     def summarize_precision(group):
         if (group["Acceptance"] == "-").all():
             return "NA"
-        return "Pass" if (group["P_Result"] == "Pass").all() else "Fail"
+    
+        filtered = group[group["P_Result"] != "NA"]
+    
+        if filtered.empty:
+            return "NA"
+    
+        return "Pass" if (filtered["P_Result"] == "Pass").all() else "Fail"
+
     
     accuracy_summary = final_df.groupby("Elements").apply(summarize_accuracy).reset_index()
     accuracy_summary.columns = ["Elements", "Accuracy_Result"]
