@@ -59,7 +59,7 @@ st.subheader("✅ Checklist Confirmation")
 col1, col2 = st.columns(2)
 check_stab = col1.checkbox("Stabilization")
 check_maint = col1.checkbox("Routine Maintenance")
-check_err = col2.checkbox("Error-Free Operation")
+check_err = col2.checkbox("Diagnostics")
 check_prep = col2.checkbox("Sample Preparation")
 
 valid = all([username, bench_no, base, matrix, model])
@@ -76,7 +76,7 @@ if valid:
         "checklist": {
             "stabilization": check_stab,
             "maintenance": check_maint,
-            "error_free": check_err,
+            "Diagnostics": check_err,
             "preparation": check_prep
         }
     }
@@ -106,7 +106,7 @@ def log_user_data(user_data):
         "Model": user_data["model"],
         "Stabilization": user_data["checklist"]["stabilization"],
         "Maintenance": user_data["checklist"]["maintenance"],
-        "Error Free": user_data["checklist"]["error_free"],
+        "Diagnostics": user_data["checklist"]["Diagnostics"],
         "Preparation": user_data["checklist"]["preparation"]
     }
 
