@@ -196,6 +196,6 @@ if uploaded_file:
     st.download_button(
         label="Download .xlsx",
         data=buffer,
-        file_name="APS_AccuracyPrecision_Result.xlsx",
+        file_name="APS_Stability_Result.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
