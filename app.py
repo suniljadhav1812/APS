@@ -60,6 +60,12 @@ with st.sidebar:
         model_options = []
 
     model = st.selectbox("Select Model", model_options)
+    st.subheader("✅ Checklist Confirmation")
+    col1, col2 = st.columns(2)
+    check_stab = col1.checkbox("Stabilization")
+    check_maint = col1.checkbox("Routine Maintenance")
+    check_err = col2.checkbox("Diagnostics")
+    check_prep = col2.checkbox("Sample Preparation")
     if st.button("Submit"):
         if all([username, bench_no, base, matrix, model]):
             user_data = {
@@ -77,12 +83,11 @@ with st.sidebar:
                     "preparation": check_prep
                 }
             }
-
             save_user_data(user_data)
             log_user_data(user_data)
-            st.success("✅ All set! You may proceed from below.")
+            st.success("✅ User info saved. You can now go to the test pages.")
         else:
-            st.warning("⚠️ Please complete all required fields.")
+            st.warning("⚠️ Please fill all required fields.")
 
 st.subheader("📌 Prerequisites")
 st.text_area("Checklist", load_prerequisites(), height=280, disabled=True)
