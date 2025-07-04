@@ -81,13 +81,15 @@ if valid:
     
     
     user_data = {
-        "username": username,     # these should be your input values
+        "username": username,
         "bench_no": bench_no,
-        "lsd": lsd,
-        "base": base,
-        "matrix": matrix,
-        "model": model
+        "lsd": str(lsd),  # ✅ convert to string
+        ...
     }
+    
+    with open("temp_user_data.json", "w") as f:
+        json.dump(user_data, f)
+
     
     # Save the data to a file
     with open("temp_user_data.json", "w") as f:
