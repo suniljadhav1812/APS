@@ -5,6 +5,7 @@ import os
 import json
 from io import BytesIO
 from datetime import datetime
+import io
 
 st.set_page_config(page_title="Stability Test", layout="wide")
 st.title("📈 Stability Test (Short / Long Term)")
@@ -166,16 +167,22 @@ if uploaded_file:
     st.subheader("📊 Full Processed Data")
     st.dataframe(final_df)
 
-    output = BytesIO()
+    
+    # Step 1: Create the in-memory buffer
+    buffer = io.BytesIO()
+    
+    # Step 2: Write the DataFrame to Excel using openpyxl
     with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
-        final_df.to_excel(writer, index=False, sheet_name='StabilityData')
-        element_summary.to_excel(writer, index=False, sheet_name='Summary')
-        writer.save()
-        processed_data = output.getvalue()
-
+        final_df.to_excel(writer, index=False)
+    
+    # Step 3: Rewind the buffer to the beginning
+    buffer.seek(0)
+    
+    # Step 4: Create download button
     st.download_button(
-        label="📥 Download Result as Excel",
-        data=processed_data,
-        file_name=f"{username}_Stability_Test_Result.xlsx",
+        label="Download .xlsx",
+        data=buffer,
+        file_name="APS_AccuracyPrecision_Result.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
+
