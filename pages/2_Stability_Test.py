@@ -5,45 +5,21 @@ import os
 import json
 from io import BytesIO
 from datetime import datetime
-import io
 
 st.set_page_config(page_title="Stability Test", layout="wide")
 st.title("📈 Stability Test (Short / Long Term)")
 
 TEMP_FILE = "temp_user_data.json"
 
-# Check if the file exists
-if not os.path.exists(TEMP_FILE):
-    st.warning("⚠️ Please fill out the main form before starting the Stability Test.")
-    st.stop()
-
-# Read the data
-with open(TEMP_FILE, "r") as f:
-    user_data = json.load(f)
-
-# Optional: Check if important values are present
-required = ["username", "bench_no", "lsd"]
-if not all(k in user_data for k in required):
-    st.warning("⚠️ Missing information. Please re-fill the main form.")
-    st.stop()
-
-
 # Load saved user data
 @st.cache_data
 def load_user_data():
-    if not os.path.exists(TEMP_FILE):
-        return None
     try:
         with open(TEMP_FILE, "r") as f:
             return json.load(f)
     except:
-        return None
-
-user_data = load_user_data()
-
-if not user_data:
-    st.warning("⚠️ Please fill out the main form before starting the Stability Test.")
-    st.stop()
+        st.error("User info not found. Please complete setup from main page.")
+        st.stop()
 
 def load_precision_table(model_name, base_name):
     folder = "Precision_tables"
@@ -182,9 +158,8 @@ if uploaded_file:
     filtered_df = final_df[~final_df['Cert. Val.'].astype(str).str.contains("-", na=False)]
     element_summary = filtered_df.groupby("Elements").apply(summarize_stability).reset_index()
     element_summary.columns = ["Elements", "Stability_Result"]
-    element_summary["Elements"] = element_summary["Elements"].str.title()
-    final_df["Elements"] = final_df["Elements"].str.capitalize()
-    st.subheader("📋 Stability Result Summary")
+
+st.subheader("📋 Stability Result Summary")
     stability_pass_count = element_summary[element_summary["Stability_Result"] == "Pass"].shape[0]
     stability_total = element_summary[element_summary["Stability_Result"].isin(["Pass", "Fail"])].shape[0]
     
@@ -221,4 +196,3 @@ if uploaded_file:
         file_name="APS_AccuracyPrecision_Result.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
-
