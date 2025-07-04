@@ -214,17 +214,7 @@ if uploaded_file:
     
     st.subheader("📋 Precision Summary Table")
     st.dataframe(precision_summary)
-    def highlight_pass(row):
-        if row["A_Result"] == "Pass" and row["P_Result"] == "Pass":
-            return ["background-color: lightgreen"] * len(row)
-        return [""] * len(row)
     
-    styled_df = final_df[[
-        "Sample Name", "Elements", "Mean", "Cert. Val.", "DEV", "A_Limit", "%DEV_A", "A_Result",
-        "SD", "P_Limit", "%DEV_P", "P_Result"
-    ]].style.apply(highlight_pass, axis=1)
-    
-    st.dataframe(styled_df, use_container_width=True)
 
 
     # Filter out rows with NaN in %DEV_A and %DEV_P
