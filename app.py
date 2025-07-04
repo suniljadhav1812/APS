@@ -57,7 +57,7 @@ st.subheader("✅ Checklist Confirmation")
 col1, col2 = st.columns(2)
 check_stab = col1.checkbox("Stabilization")
 check_maint = col1.checkbox("Routine Maintenance")
-check_err = col2.checkbox("Error-Free Operation")
+check_err = col2.checkbox("Diagnostics")
 check_prep = col2.checkbox("Sample Preparation")
 
 valid = all([username, bench_no, base, matrix, model])
