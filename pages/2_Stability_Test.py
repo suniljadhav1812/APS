@@ -167,7 +167,7 @@ if uploaded_file:
     st.dataframe(final_df)
 
     output = BytesIO()
-    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+    with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
         final_df.to_excel(writer, index=False, sheet_name='StabilityData')
         element_summary.to_excel(writer, index=False, sheet_name='Summary')
         writer.save()
