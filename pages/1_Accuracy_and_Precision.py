@@ -5,7 +5,7 @@ import numpy as np
 import os
 import json
 from difflib import get_close_matches
-
+import io
 TEMP_FILE = "temp_user_data.json"
 
 st.set_page_config(page_title="Accuracy and Precision", layout="wide")
