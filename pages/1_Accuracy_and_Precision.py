@@ -110,6 +110,18 @@ if uploaded_file:
     
     # Apply mapping to final_df
     final_df["Sample Name"] = final_df["Sample Name"].replace(mapping)
+    
+    # Display mapping table
+    df_mapping = pd.DataFrame({
+        "Expected Sample": expected_samples,
+        "Imported Sample": [next((k for k, v in mapping.items() if v == e), "❌ Not Found") for e in expected_samples]
+    })
+    st.subheader("🔗 Sample Mapping")
+    st.dataframe(df_mapping)
+
+
+    # Update names in final_df
+    final_df["Sample Name"] = final_df["Sample Name"].replace(mapping)
 
     # Clean and compute
     final_df["Elements"] = final_df["Elements"].str.replace(" (%)", "", regex=False).str.strip().str.capitalize()
