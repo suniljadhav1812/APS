@@ -167,11 +167,25 @@ if uploaded_file:
 
     st.subheader("📊 Summary Results")
 
+    # Filter out rows with NaN in %DEV_A and %DEV_P
+    valid_accuracy = final_df[final_df["%DEV_A"].notna()]
+    valid_precision = final_df[final_df["%DEV_P"].notna()]
+    
+    # Count only valid and "Pass" entries
+    accuracy_pass_count = valid_accuracy[valid_accuracy["A_Result"] == "Pass"].shape[0]
+    precision_pass_count = valid_precision[valid_precision["P_Result"] == "Pass"].shape[0]
+    
+    # Total valid counts
+    accuracy_total = valid_accuracy.shape[0]
+    precision_total = valid_precision.shape[0]
+    
+    # Show metrics
     colA1, colA2 = st.columns(2)
     with colA1:
-        st.metric("Accuracy Pass", final_df[final_df["A_Result"] == "Pass"].shape[0])
+        st.metric("Accuracy Pass", f"{accuracy_pass_count} / {accuracy_total}")
     with colA2:
-        st.metric("Precision Pass", final_df[final_df["P_Result"] == "Pass"].shape[0])
+        st.metric("Precision Pass", f"{precision_pass_count} / {precision_total}")
+
 
     st.dataframe(final_df[["Sample Name", "Elements", "Mean", "Cert. Val.", "DEV", "A_Limit", "%DEV_A", "A_Result", "SD", "P_Limit", "%DEV_P", "P_Result"]])
 
