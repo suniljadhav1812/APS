@@ -152,5 +152,33 @@ if os.path.exists(LOG_FILE):
             mime="text/csv"
         )
 
-save_user_data(user_data)
-log_user_data(user_data)
+if valid:
+    user_data = {
+        "username": username,
+        "bench_no": bench_no,
+        "lsd": lsd.strftime("%d-%m-%Y"),
+        "base": base,
+        "matrix": matrix,
+        "model": model,
+        "timestamp": datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
+        "checklist": {
+            "stabilization": check_stab,
+            "maintenance": check_maint,
+            "error_free": check_err,
+            "preparation": check_prep
+        }
+    }
+
+    save_user_data(user_data)
+    log_user_data(user_data)
+
+    colA, colB = st.columns(2)
+    with colA:
+        st.success("✅ All set! You may proceed.")
+        st.page_link("pages/1_Accuracy_and_Precision.py", label="➡️ Accuracy & Precision Test", icon="🧪")
+
+    with colB:
+        st.page_link("pages/2_Stability_Test.py", label="📈 Stability Test", icon="📊")
+else:
+    st.warning("⚠️ Please fill in all fields above and check confirmation boxes.")
+
