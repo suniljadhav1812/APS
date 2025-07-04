@@ -183,11 +183,11 @@ if uploaded_file:
     # Normalize element casing
     accuracy_summary["Elements"] = accuracy_summary["Elements"].str.title()
     precision_summary["Elements"] = precision_summary["Elements"].str.title()
-    element_summary["Elements"] = element_summary["Elements"].str.title()
+    
     
     # Merge summaries on Elements
     summary_table = accuracy_summary.merge(precision_summary, on="Elements", how="outer")
-    summary_table = summary_table.merge(element_summary, on="Elements", how="outer")
+    
 
     st.subheader("📋 Accuracy Summary Table")
     st.dataframe(accuracy_summary)
