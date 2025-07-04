@@ -172,13 +172,6 @@ if uploaded_file:
     stability_pass_count = element_summary[element_summary["Stability_Result"] == "Pass"].shape[0]
     stability_total = element_summary[element_summary["Stability_Result"].isin(["Pass", "Fail"])].shape[0]
     
-    def highlight_stability(row):
-    if row["Stability_Result"] == "Pass":
-        return ["background-color: lightgreen"] * len(row)
-    return [""] * len(row)
-
-    styled_stability_df = element_summary.style.apply(highlight_stability, axis=1)
-    st.dataframe(styled_stability_df, use_container_width=True)
 
     colS1, _ = st.columns(2)
     with colS1:
