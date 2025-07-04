@@ -57,7 +57,11 @@ model = user_data["model"]
 username = user_data["username"]
 lsd = user_data["lsd"]
 
-st.markdown(f"**User:** {username} | **Bench No:** {user_data['bench_no']} | **Model:** {model} | **LSD:** {lsd}")
+if valid:
+    st.markdown(
+        f"**User:** {username} | **Bench No:** {bench_no} | **Model:** {model} | **LSD:** {lsd.strftime('%d-%m-%Y')}"
+    )
+
 
 st.radio("Select Stability Type", ["ShortTerm", "LongTerm"], horizontal=True, key="stab_type")
 uploaded_file = st.file_uploader("Upload Stability Report (Excel)", type=["xlsx", "xls"])
