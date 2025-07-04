@@ -78,22 +78,6 @@ if valid:
             "preparation": check_prep
         }
     }
-    
-    
-    user_data = {
-        "username": username,
-        "bench_no": bench_no,
-        "lsd": str(lsd),  # ✅ convert to string
-      
-    }
-    
-    with open("temp_user_data.json", "w") as f:
-        json.dump(user_data, f)
-
-    
-    # Save the data to a file
-    with open("temp_user_data.json", "w") as f:
-        json.dump(user_data, f)
 
     save_user_data(user_data)
 
