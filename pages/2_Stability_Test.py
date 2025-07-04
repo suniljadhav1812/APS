@@ -162,11 +162,25 @@ if uploaded_file:
     element_summary["Elements"] = element_summary["Elements"].str.title()
     final_df["Elements"] = final_df["Elements"].str.capitalize()
     st.subheader("📋 Stability Result Summary")
+    stability_pass_count = element_summary[element_summary["Stability_Result"] == "Pass"].shape[0]
+    stability_total = element_summary[element_summary["Stability_Result"].isin(["Pass", "Fail"])].shape[0]
+    
+    # Show Stability Metric
+    st.subheader("📋 Stability Result Summary")
+    
+    colS1, _ = st.columns(2)
+    with colS1:
+        st.metric("Stability Pass", f"{stability_pass_count} / {stability_total}")
+    
+    # Show Stability result table
     st.dataframe(element_summary)
 
     # Show full results with option to download
-    st.subheader("📊 Full Processed Data")
-    st.dataframe(final_df)
+    st.subheader("📋 Stability Summary Table")
+    st.dataframe(final_df[[
+    "Set", "Elements", "Mean", "Cert. Val.", 
+    "DEV", "S_Result"  # include S_Limit or other if applicable
+]])
 
     
     # Step 1: Create the in-memory buffer
