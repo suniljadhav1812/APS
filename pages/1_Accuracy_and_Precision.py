@@ -165,7 +165,36 @@ if uploaded_file:
     final_df["%DEV_A"] = ((final_df["DEV"] / final_df["A_Limit"]) * 100).round(2)
     final_df["%DEV_P"] = ((final_df["SD"] / final_df["P_Limit"]) * 100).round(2)
 
-    st.subheader("📊 Summary Results")
+    def summarize_accuracy(group):
+        if (group["Cert. Val."] == "-").all():
+            return "NA"
+        return "Pass" if (group["A_Result"] == "Pass").all() else "Fail"
+    
+    accuracy_summary = final_df.groupby("Elements").apply(summarize_accuracy).reset_index()
+    accuracy_summary.columns = ["Elements", "Accuracy_Result"]
+    def summarize_precision(group):
+        if (group["Acceptance"] == "-").all():
+            return "NA"
+        return "Pass" if (group["P_Result"] == "Pass").all() else "Fail"
+    
+    precision_summary = final_df.groupby("Elements").apply(summarize_precision).reset_index()
+    precision_summary.columns = ["Elements", "Precision_Result"]
+
+    # Normalize element casing
+    accuracy_summary["Elements"] = accuracy_summary["Elements"].str.title()
+    precision_summary["Elements"] = precision_summary["Elements"].str.title()
+    element_summary["Elements"] = element_summary["Elements"].str.title()
+    
+    # Merge summaries on Elements
+    summary_table = accuracy_summary.merge(precision_summary, on="Elements", how="outer")
+    summary_table = summary_table.merge(element_summary, on="Elements", how="outer")
+
+    st.subheader("📋 Accuracy Summary Table")
+    st.dataframe(accuracy_summary)
+    
+    st.subheader("📋 Precision Summary Table")
+    st.dataframe(precision_summary)
+
 
     # Filter out rows with NaN in %DEV_A and %DEV_P
     valid_accuracy = final_df[final_df["%DEV_A"].notna()]
