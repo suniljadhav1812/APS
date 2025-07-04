@@ -179,7 +179,7 @@ if uploaded_file:
     st.subheader("📋 Stability Summary Table")
     st.dataframe(final_df[[
     "Set", "Elements", "Mean", "Cert. Val.", 
-    "DEV", "S_Result"  # include S_Limit or other if applicable
+    "DEV", "S_Limit", "%DEV_S", "S_Result" 
 ]])
 
     
