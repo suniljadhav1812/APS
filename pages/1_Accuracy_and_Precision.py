@@ -159,7 +159,7 @@ if uploaded_file:
         buffer = io.BytesIO()
         
         # Write the DataFrame to the buffer
-        with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
+        with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
             final_df.to_excel(writer, index=False)
         
         # Rewind the buffer
