@@ -160,28 +160,52 @@ if uploaded_file:
         lambda row: "Pass" if pd.notna(row["SD"]) and pd.notna(row["P_Limit"]) and row["SD"] <= row["P_Limit"] else "Fail",
         axis=1
     )
-
     final_df["%DEV_A"] = ((final_df["DEV"] / final_df["A_Limit"]) * 100).round(2)
     final_df["%DEV_P"] = ((final_df["SD"] / final_df["P_Limit"]) * 100).round(2)
-
+    final_df["%DEV_A"] = final_df["%DEV_A"].replace("None", pd.NA)
+    final_df["%DEV_P"] = final_df["%DEV_P"].replace("None", pd.NA)
+    
+    # Update A_Result to 'NA' where %DEV_A is missing
+    final_df.loc[final_df["%DEV_A"].isna(), "A_Result"] = "NA"
+    
+    # Update P_Result to 'NA' where %DEV_P is missing
+    final_df.loc[final_df["%DEV_P"].isna(), "P_Result"] = "NA"
+    
+    # Count valid samples for Accuracy and Precision
+    accuracy_counts = final_df[final_df["%DEV_A"].notna()].groupby("Elements").size().reset_index(name="Sample_Count")
+    precision_counts = final_df[final_df["%DEV_P"].notna()].groupby("Elements").size().reset_index(name="Sample_Count")
+    
+    # Use your existing summarization
     def summarize_accuracy(group):
         if (group["Cert. Val."] == "-").all():
             return "NA"
         return "Pass" if (group["A_Result"] == "Pass").all() else "Fail"
     
-    accuracy_summary = final_df.groupby("Elements").apply(summarize_accuracy).reset_index()
-    accuracy_summary.columns = ["Elements", "Accuracy_Result"]
     def summarize_precision(group):
         if (group["Acceptance"] == "-").all():
             return "NA"
         return "Pass" if (group["P_Result"] == "Pass").all() else "Fail"
     
+    accuracy_summary = final_df.groupby("Elements").apply(summarize_accuracy).reset_index()
+    accuracy_summary.columns = ["Elements", "Accuracy_Result"]
+    
     precision_summary = final_df.groupby("Elements").apply(summarize_precision).reset_index()
     precision_summary.columns = ["Elements", "Precision_Result"]
-
-    # Normalize element casing
+    
+    # Normalize element names
     accuracy_summary["Elements"] = accuracy_summary["Elements"].str.title()
     precision_summary["Elements"] = precision_summary["Elements"].str.title()
+    accuracy_counts["Elements"] = accuracy_counts["Elements"].str.title()
+    precision_counts["Elements"] = precision_counts["Elements"].str.title()
+    
+    # Merge counts into summary
+    accuracy_summary = accuracy_summary.merge(accuracy_counts, on="Elements", how="left")
+    precision_summary = precision_summary.merge(precision_counts, on="Elements", how="left")
+    
+    # Fill missing counts
+    accuracy_summary["Sample_Count"] = accuracy_summary["Sample_Count"].fillna(0).astype(int)
+    precision_summary["Sample_Count"] = precision_summary["Sample_Count"].fillna(0).astype(int)
+
     
     
     # Merge summaries on Elements
