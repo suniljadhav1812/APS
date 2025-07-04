@@ -53,18 +53,34 @@ with st.sidebar:
     model = st.selectbox("Select Model", model_options)
 
 st.subheader("📌 Prerequisites")
-st.text_area("Checklist", load_prerequisites(), height=280, disabled=True)
+
+prereq_text = load_prerequisites()
+
+st.markdown(
+    f"""
+    <div style="background-color:#f9f9f9; padding:15px; border-radius:8px; border:1px solid #ddd; max-height:300px; overflow-y:scroll;">
+    <pre style="font-size:15px; color:#222;">{prereq_text}</pre>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
 
 st.subheader("✅ Checklist Confirmation")
 col1, col2 = st.columns(2)
-check_stab = col1.checkbox("Stabilization")
-check_maint = col1.checkbox("Routine Maintenance")
-check_err = col2.checkbox("Diagnostics")
-check_prep = col2.checkbox("Sample Preparation")
+
+stab = col1.radio("Stabilization", ["No", "Yes"], horizontal=True)
+maint = col1.radio("Routine Maintenance", ["No", "Yes"], horizontal=True)
+diag = col2.radio("Diagnostics", ["No", "Yes"], horizontal=True)
+prep = col2.radio("Sample Preparation", ["No", "Yes"], horizontal=True)
+
+# Determine if at least one checklist item is marked "Yes"
+checklist_ok = any([stab == "Yes", maint == "Yes", diag == "Yes", prep == "Yes"])
+
 
 valid = all([username, bench_no, base, matrix, model])
 
-if valid:
+if valid and checklist_ok:
     user_data = {
         "username": username,
         "bench_no": bench_no,
@@ -74,14 +90,15 @@ if valid:
         "model": model,
         "timestamp": datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
         "checklist": {
-            "stabilization": check_stab,
-            "maintenance": check_maint,
-            "Diagnostics": check_err,
-            "preparation": check_prep
+            "stabilization": stab,
+            "maintenance": maint,
+            "Diagnostics": diag,
+            "preparation": prep
         }
     }
 
     save_user_data(user_data)
+    log_user_data(user_data)  # ✅ This is where you put it
 
     colA, colB = st.columns(2)
     with colA:
@@ -91,7 +108,7 @@ if valid:
     with colB:
         st.page_link("pages/2_Stability_Test.py", label="📈 Stability Test", icon="📊")
 else:
-    st.warning("⚠️ Please fill in all fields above and check confirmation boxes.")
+    st.warning("⚠️ Please fill in all fields and select 'Yes' for at least one checklist item.")
 
 LOG_FILE = "user_log.csv"
 
