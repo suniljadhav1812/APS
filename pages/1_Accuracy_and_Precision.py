@@ -27,6 +27,20 @@ user_data = load_user_data()
 if not user_data:
     st.warning("⚠️ Please fill out the main form first.")
     st.stop()
+user_data = load_user_data()
+if not user_data:
+    st.warning("⚠️ Please fill out the main form before starting the Accuracy & Precision Test.")
+    st.stop()
+
+# Extract and display user info
+base = user_data["base"]
+matrix = user_data["matrix"]
+model = user_data["model"]
+username = user_data["username"]
+lsd = user_data["lsd"]
+bench_no = user_data["bench_no"]
+
+st.markdown(f"**👤 User:** {username} | **🧪 Bench No:** {bench_no} | **🔧 Model:** {model} | **📅 LSD:** {lsd}")
 
 base = user_data.get("base", "")
 matrix = user_data.get("matrix", "")
