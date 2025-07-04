@@ -14,14 +14,20 @@ st.title("🧪 Accuracy & Precision Test")
 
 # Load user session
 def load_user_data():
+    if not os.path.exists("temp_user_data.json"):
+        return None
     try:
-        with open(TEMP_FILE, "r") as f:
+        with open("temp_user_data.json", "r") as f:
             return json.load(f)
     except:
-        st.error("User data not found. Please complete the main form first.")
-        st.stop()
+        return None
 
 user_data = load_user_data()
+
+if not user_data:
+    st.warning("⚠️ Please fill out the main form first.")
+    st.stop()
+
 base = user_data.get("base", "")
 matrix = user_data.get("matrix", "")
 samples = []
