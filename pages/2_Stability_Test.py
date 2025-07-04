@@ -5,6 +5,8 @@ import os
 import json
 from io import BytesIO
 from datetime import datetime
+from io import BytesIO
+import io
 
 st.set_page_config(page_title="Stability Test", layout="wide")
 st.title("📈 Stability Test (Short / Long Term)")
