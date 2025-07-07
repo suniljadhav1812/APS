@@ -7,31 +7,6 @@ import json
 from difflib import get_close_matches
 import io
 TEMP_FILE = "temp_user_data.json"
-def render_table_centered(df):
-    styled_html = df.to_html(index=False, classes='styled-table')
-    st.markdown(
-        f"""
-        <style>
-        .styled-table {{
-            margin-left: auto;
-            margin-right: auto;
-            border-collapse: collapse;
-            font-size: 16px;
-            width: auto;
-        }}
-        .styled-table th, .styled-table td {{
-            border: 1px solid #dddddd;
-            text-align: center;
-            padding: 8px;
-        }}
-        .styled-table th {{
-            background-color: #f2f2f2;
-        }}
-        </style>
-        {styled_html}
-        """,
-        unsafe_allow_html=True
-    )
 
 st.set_page_config(page_title="Accuracy and Precision", layout="wide")
 st.title("🧪 Accuracy & Precision Test")
@@ -142,7 +117,7 @@ if uploaded_file:
         "Imported Sample": [next((k for k, v in mapping.items() if v == e), "❌ Not Found") for e in expected_samples]
     })
     st.subheader("🔗 Sample Mapping")
-    render_table_centered(df_mapping)
+    st.dataframe(df_mapping)
 
 
     # Update names in final_df
@@ -254,10 +229,10 @@ if uploaded_file:
     
 
     st.subheader("📋 Accuracy Summary Table")
-    render_table_centered(accuracy_summary)
+    st.dataframe(accuracy_summary)
     
     st.subheader("📋 Precision Summary Table")
-    render_table_centered(precision_summary)
+    st.dataframe(precision_summary)
     
 
 
@@ -281,7 +256,7 @@ if uploaded_file:
         st.metric("Precision Pass", f"{precision_pass_count} / {precision_total}")
 
 
-    render_table_centered(final_df[["Sample Name", "Elements", "Mean", "Cert. Val.", "DEV", "A_Limit", "%DEV_A", "A_Result", "SD", "P_Limit", "%DEV_P", "P_Result"]])
+    st.dataframe(final_df[["Sample Name", "Elements", "Mean", "Cert. Val.", "DEV", "A_Limit", "%DEV_A", "A_Result", "SD", "P_Limit", "%DEV_P", "P_Result"]])
 
     with st.expander("📥 Download Final Result as Excel"):
         
