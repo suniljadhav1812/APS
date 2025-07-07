@@ -7,31 +7,6 @@ from io import BytesIO
 from datetime import datetime
 from io import BytesIO
 import io
-def render_table_centered(df):
-    styled_html = df.to_html(index=False, classes='styled-table')
-    st.markdown(
-        f"""
-        <style>
-        .styled-table {{
-            margin-left: auto;
-            margin-right: auto;
-            border-collapse: collapse;
-            font-size: 16px;
-            width: auto;
-        }}
-        .styled-table th, .styled-table td {{
-            border: 1px solid #dddddd;
-            text-align: center;
-            padding: 8px;
-        }}
-        .styled-table th {{
-            background-color: #f2f2f2;
-        }}
-        </style>
-        {styled_html}
-        """,
-        unsafe_allow_html=True
-    )
 
 st.set_page_config(page_title="Stability Test", layout="wide")
 st.title("📈 Stability Test (Short / Long Term)")
@@ -215,7 +190,7 @@ if uploaded_file:
     
     # 7️⃣ Step 7: Display results
     st.subheader("📋 Stability Result Summary")
-    render_table_centered(element_summary)
+    st.dataframe(element_summary)
     
     # Optional: Show summary stats
     stability_pass_count = element_summary[element_summary["Stability_Result"] == "Pass"].shape[0]
@@ -229,11 +204,11 @@ if uploaded_file:
         st.metric("Stability Pass", f"{stability_pass_count} / {stability_total}")
     
     # Show Stability result table
-    render_table_centered(element_summary)
+    st.dataframe(element_summary)
 
     # Show full results with option to download
     st.subheader("📋 Stability Summary Table")
-    render_table_centered(final_df[[
+    st.dataframe(final_df[[
     "Set", "Elements", "Mean", "Cert. Val.", 
     "DEV", "S_Limit", "%DEV_S", "S_Result" 
 ]])
