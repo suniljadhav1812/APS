@@ -57,11 +57,7 @@ model = user_data["model"]
 username = user_data["username"]
 lsd = user_data["lsd"]
 
-if valid:
-    st.markdown(
-        f"**User:** {username} | **Bench No:** {bench_no} | **Model:** {model} | **LSD:** {lsd.strftime('%d-%m-%Y')}"
-    )
-
+st.markdown(f"**User:** {username} | **Bench No:** {user_data['bench_no']} | **Model:** {model} | **LSD:** {lsd}")
 
 st.radio("Select Stability Type", ["ShortTerm", "LongTerm"], horizontal=True, key="stab_type")
 uploaded_file = st.file_uploader("Upload Stability Report (Excel)", type=["xlsx", "xls"])
@@ -155,48 +151,20 @@ if uploaded_file:
         axis=1
     )
 
-    # 1️⃣ Step 1: Clean and standardize data
-    final_df["%DEV_S"] = final_df["%DEV_S"].replace("None", pd.NA)
-    final_df["S_Result"] = final_df.apply(lambda row: "NA" if pd.isna(row["%DEV_S"]) else row["S_Result"], axis=1)
-    
-    # 2️⃣ Step 2: Count valid samples (i.e., where %DEV_S is not NA)
-    stability_counts = final_df[final_df["%DEV_S"].notna()].groupby("Elements").size().reset_index(name="Sample_Count")
-    
-    # 3️⃣ Step 3: Define summary function that ignores 'NA'
+    # Group Summary
     def summarize_stability(group):
         if (group["Cert. Val."] == "-").all():
             return "NA"
-    
-        filtered = group[group["S_Result"] != "NA"]
-    
-        if filtered.empty:
-            return "NA"
-    
-        return "Pass" if (filtered["S_Result"] == "Pass").all() else "Fail"
-    
-    # 4️⃣ Step 4: Filter out full-missing Cert. Val. rows and group
+        return "Pass" if (group["S_Result"] == "Pass").all() else "Fail"
+
     filtered_df = final_df[~final_df['Cert. Val.'].astype(str).str.contains("-", na=False)]
     element_summary = filtered_df.groupby("Elements").apply(summarize_stability).reset_index()
     element_summary.columns = ["Elements", "Stability_Result"]
-    
-    # 5️⃣ Step 5: Normalize element names for merging
     element_summary["Elements"] = element_summary["Elements"].str.title()
-    stability_counts["Elements"] = stability_counts["Elements"].str.title()
     final_df["Elements"] = final_df["Elements"].str.capitalize()
-    
-    # 6️⃣ Step 6: Merge sample counts into summary
-    element_summary = element_summary.merge(stability_counts, on="Elements", how="left")
-    element_summary["Sample_Count"] = element_summary["Sample_Count"].fillna(0).astype(int)
-    
-    # 7️⃣ Step 7: Display results
     st.subheader("📋 Stability Result Summary")
-    st.dataframe(element_summary)
-    
-    # Optional: Show summary stats
     stability_pass_count = element_summary[element_summary["Stability_Result"] == "Pass"].shape[0]
     stability_total = element_summary[element_summary["Stability_Result"].isin(["Pass", "Fail"])].shape[0]
-    st.markdown(f"✅ **Pass Count:** {stability_pass_count} / {stability_total}")
-
     
 
     colS1, _ = st.columns(2)
