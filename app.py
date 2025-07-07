@@ -58,8 +58,8 @@ prereq_text = load_prerequisites()
 
 st.markdown(
     f"""
-    <div style="background-color:#ffffff; padding:10px 15px; border-radius:6px; border:1px solid #ccc; max-height:300px; overflow-y:auto;">
-        <pre style="font-family: 'Segoe UI', sans-serif; font-size:16px; line-height:1.5; color:#111;">{prereq_text}</pre>
+    <div style="background-color:#f9f9f9; padding:15px; border-radius:8px; border:1px solid #ddd; max-height:300px; overflow-y:scroll;">
+    <pre style="font-size:15px; color:#222;">{prereq_text}</pre>
     </div>
     """,
     unsafe_allow_html=True
@@ -69,37 +69,16 @@ st.markdown(
 st.subheader("✅ Checklist Confirmation")
 col1, col2 = st.columns(2)
 
-check_stab = col1.radio("Stabilization", ["Yes", "No"]) == "Yes"
-check_maint = col1.radio("Routine Maintenance", ["Yes", "No"]) == "Yes"
-check_err = col2.radio("Diagnostics", ["Yes", "No"]) == "Yes"
-check_prep = col2.radio("Sample Preparation", ["Yes", "No"]) == "Yes"
-
+stab = col1.radio("Stabilization", ["No", "Yes"], horizontal=True)
+maint = col1.radio("Routine Maintenance", ["No", "Yes"], horizontal=True)
+diag = col2.radio("Diagnostics", ["No", "Yes"], horizontal=True)
+prep = col2.radio("Sample Preparation", ["No", "Yes"], horizontal=True)
 
 # Determine if at least one checklist item is marked "Yes"
 checklist_ok = any([stab == "Yes", maint == "Yes", diag == "Yes", prep == "Yes"])
 
 
 valid = all([username, bench_no, base, matrix, model])
-def log_user_data(user_data):
-    log_entry = {
-        "Timestamp": user_data["timestamp"],
-        "Username": user_data["username"],
-        "Bench No": user_data["bench_no"],
-        "LSD": user_data["lsd"],
-        "Base": user_data["base"],
-        "Matrix": user_data["matrix"],
-        "Model": user_data["model"],
-        "Stabilization": user_data["checklist"]["stabilization"],
-        "Maintenance": user_data["checklist"]["maintenance"],
-        "Diagnostics": user_data["checklist"]["Diagnostics"],
-        "Preparation": user_data["checklist"]["preparation"]
-    }
-
-    df_log = pd.DataFrame([log_entry])
-    if not os.path.exists(LOG_FILE):
-        df_log.to_csv(LOG_FILE, index=False)
-    else:
-        df_log.to_csv(LOG_FILE, mode='a', index=False, header=False)
 
 if valid and checklist_ok:
     user_data = {
